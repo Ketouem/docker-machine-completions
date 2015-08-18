@@ -1,6 +1,8 @@
 # docker-machine-completions
 Bash script providing completions for docker-machine
 
+Heavily inspired by the original completions [script](https://github.com/docker/docker/blob/master/contrib/completion/bash/docker) for Docker.
+
 To enable the completions:
  
 1. Copy this file inside /etc/bash_completion.d
