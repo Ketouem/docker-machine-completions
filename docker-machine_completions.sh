@@ -25,6 +25,196 @@ __get_machines()
     COMPREPLY=( $(compgen -W "${machines[*]}" -- "$cur") )
 }
 
+_docker-machine_create()
+{
+    local options_with_args="
+        --amazonec2-access-key
+        --amazonec2-ami
+        --amazonec2-iam-instance-profile
+        --amazonec2-instance-type
+        --amazonec2-monitoring
+        --amazonec2-private-address-only
+        --amazonec2-region
+        --amazonec2-request-spot-instance
+        --amazonec2-root-size
+        --amazonec2-secret-key
+        --amazonec2-security-group
+        --amazonec2-session-token
+        --amazonec2-spot-price
+        --amazonec2-ssh-user
+        --amazonec2-subnet-id
+        --amazonec2-vpc-id
+        --amazonec2-zone
+        --azure-docker-port
+        --azure-docker-swarm-master-port
+        --azure-image
+        --azure-location
+        --azure-password
+        --azure-publish-settings-file
+        --azure-size
+        --azure-ssh-port
+        --azure-subscription-cert
+        --azure-subscription-id
+        --azure-username
+        --digitalocean-access-token
+        --digitalocean-backups
+        --digitalocean-image
+        --digitalocean-ipv6
+        --digitalocean-private-networking
+        --digitalocean-region
+        --digitalocean-size
+        --exoscale-api-key
+        --exoscale-api-secret-key
+        --exoscale-availability-zone
+        --exoscale-disk-size
+        --exoscale-image
+        --exoscale-instance-profile
+        --exoscale-security-group
+        --exoscale-url
+        --generic-ip-address
+        --generic-ssh-key
+        --generic-ssh-port
+        --generic-ssh-user
+        --google-address
+        --google-auth-token
+        --google-disk-size
+        --google-disk-type
+        --google-machine-type
+        --google-preemptible
+        --google-project
+        --google-scopes
+        --google-username
+        --google-zone
+        --openstack-auth-url
+        --openstack-availability-zone
+        --openstack-domain-id
+        --openstack-domain-name
+        --openstack-endpoint-type
+        --openstack-flavor-id
+        --openstack-flavor-name
+        --openstack-floatingip-pool
+        --openstack-image-id
+        --openstack-image-name
+        --openstack-insecure
+        --openstack-net-id
+        --openstack-net-name
+        --openstack-password
+        --openstack-region
+        --openstack-sec-groups
+        --openstack-ssh-port
+        --openstack-ssh-user
+        --openstack-tenant-id
+        --openstack-tenant-name
+        --openstack-username
+        --rackspace-api-key
+        --rackspace-docker-install
+        --rackspace-endpoint-type
+        --rackspace-flavor-id
+        --rackspace-image-id
+        --rackspace-region
+        --rackspace-ssh-port
+        --rackspace-ssh-user
+        --rackspace-username
+        --softlayer-api-endpoint
+        --softlayer-api-key
+        --softlayer-cpu
+        --softlayer-disk-size
+        --softlayer-domain
+        --softlayer-hostname
+        --softlayer-hourly-billing
+        --softlayer-image
+        --softlayer-local-disk
+        --softlayer-memory
+        --softlayer-private-net-only
+        --softlayer-private-vlan-id
+        --softlayer-public-vlan-id
+        --softlayer-region
+        --softlayer-user
+        --url
+        --virtualbox-boot2docker-url
+        --virtualbox-cpu-count
+        --virtualbox-disk-size
+        --virtualbox-hostonly-cidr
+        --virtualbox-import-boot2docker-vm
+        --virtualbox-memory
+        --vmwarefusion-boot2docker-url
+        --vmwarefusion-cpu-count
+        --vmwarefusion-disk-size
+        --vmwarefusion-memory-size
+        --vmwarevcloudair-catalog
+        --vmwarevcloudair-catalogitem
+        --vmwarevcloudair-computeid
+        --vmwarevcloudair-cpu-count
+        --vmwarevcloudair-docker-port
+        --vmwarevcloudair-edgegateway
+        --vmwarevcloudair-memory-size
+        --vmwarevcloudair-orgvdcnetwork
+        --vmwarevcloudair-password
+        --vmwarevcloudair-provision
+        --vmwarevcloudair-publicip
+        --vmwarevcloudair-ssh-port
+        --vmwarevcloudair-username
+        --vmwarevcloudair-vdcid
+        --vmwarevsphere-boot2docker-url
+        --vmwarevsphere-compute-ip
+        --vmwarevsphere-cpu-count
+        --vmwarevsphere-datacenter
+        --vmwarevsphere-datastore
+        --vmwarevsphere-disk-size
+        --vmwarevsphere-memory-size
+        --vmwarevsphere-network
+        --vmwarevsphere-password
+        --vmwarevsphere-pool
+        --vmwarevsphere-username
+        --vmwarevsphere-vcenter
+        --driver -d
+        --engine-install-url
+        --engine-opt
+        --engine-insecure-registry
+        --engine-registry-mirror
+        --engine-label
+        --engine-storage-driver
+        --engine-env
+        --swarm
+        --swarm-image
+        --swarm-master
+        --swarm-discovery
+        --swarm-strategy
+        --swarm-opt
+        --swarm-host
+        --swarm-addr
+    "
+
+    case "$prev" in
+        --driver|-d)
+            local vm_driver="
+                amazonec2
+                azure
+                digitalocean
+                exoscale
+                generic
+                google
+                none
+                openstack
+                rackspace
+                softlayer
+                virtualbox
+                vmwarefusion
+                vmwarevcloudair
+                vmwarevsphere
+            "
+            COMPREPLY=( $( compgen -W "$vm_driver" -- "$cur" ) )
+            return
+            ;;
+    esac
+
+    case "$cur" in
+        -*)
+            COMPREPLY=( $( compgen -W "$options_with_args" -- "$cur" ) )
+            ;;
+    esac
+}
+
 _docker-machine_docker-machine()
 {
     local options_boolean="
