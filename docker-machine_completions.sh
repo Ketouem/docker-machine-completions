@@ -8,6 +8,58 @@
 #   3) Copy this file to a given location (e.g. ~/comps/docker-machine_completions)
 #      and add the following to your .bashrc: . ~/comps/docker-machine_completions
 #
+__get_machines()
+{
+    local machines
+
+    case "$1" in
+        "all")
+            machines=($(docker-machine ls | tail -n +2 | cut -d" " -f1))
+            ;;
+
+        "running")
+            machines=($(docker-machine ls | grep Running | tail | cut -d" " -f1))
+            ;;
+
+    esac
+    COMPREPLY=( $(compgen -W "${machines[*]}" -- "$cur") )
+}
+
+_docker-machine_ip()
+{
+    case "$cur" in
+        *)
+            __get_machines "running"
+            ;;
+        esac
+}
+
+_docker-machine_rm()
+{
+    case "$cur" in
+    *)
+        __get_machines "all"
+        ;;
+    esac
+}
+
+_docker-machine_ssh()
+{
+    case "$cur" in
+        *)
+            __get_machines "running"
+            ;;
+        esac
+}
+
+_docker-machine_status()
+{
+    case "$cur" in
+        *)
+            __get_machines "all"
+            ;;
+        esac
+}
 
 _docker-machine()
 {
@@ -49,9 +101,18 @@ _docker-machine()
                 break 
                 ;;
         esac
+        (( counter++ ))
     done
 
-    COMPREPLY=( $( compgen -W "${commands[*]}" -- "$cur") )
+    if [[ $command_pos > 0 ]]
+    then
+        local completions_func=_docker-machine_${command}
+        declare -F $completions_func >/dev/null && $completions_func
+    else
+        COMPREPLY=( $( compgen -W "${commands[*]}" -- "$cur") )
+    fi
+
+    # COMPREPLY=( $( compgen -W "${commands[*]}" -- "$cur") )
     return 0
 }
 
