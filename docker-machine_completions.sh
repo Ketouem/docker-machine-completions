@@ -25,6 +25,24 @@ __get_machines()
     COMPREPLY=( $(compgen -W "${machines[*]}" -- "$cur") )
 }
 
+_docker-machine_docker-machine()
+{
+    local options_boolean="
+        $global_options_boolean
+        --help -h
+        --version -v
+    "
+
+    case "$cur" in
+        -*)
+            COMPREPLY=( $( compgen -W "$options_boolean $global_options_with_args" -- "$cur" ) )
+            ;;
+        *)
+            COMPREPLY=( $( compgen -W "${commands[*]}" -- "$cur") )
+            ;;
+    esac
+}
+
 _docker-machine_ip()
 {
     case "$cur" in
@@ -86,6 +104,19 @@ _docker-machine()
                         h
     )
 
+    local global_options_boolean="
+        --debug -D
+        --tls-ca-cert
+        --tls-ca-key
+        --tls-client-cert
+        --tls-client-key
+        --native-ssh
+    "
+
+    local global_options_with_args="
+        --storage-path -s
+    "
+
     COMPREPLY=()
     local cur prev words cword
     _get_comp_words_by_ref -n : cur prev words cword
@@ -104,15 +135,9 @@ _docker-machine()
         (( counter++ ))
     done
 
-    if [[ $command_pos > 0 ]]
-    then
-        local completions_func=_docker-machine_${command}
-        declare -F $completions_func >/dev/null && $completions_func
-    else
-        COMPREPLY=( $( compgen -W "${commands[*]}" -- "$cur") )
-    fi
+    local completions_func=_docker-machine_${command}
+    declare -F $completions_func >/dev/null && $completions_func
 
-    # COMPREPLY=( $( compgen -W "${commands[*]}" -- "$cur") )
     return 0
 }
 
