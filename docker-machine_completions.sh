@@ -245,10 +245,10 @@ _docker-machine_ip()
 _docker-machine_rm()
 {
     case "$cur" in
-    *)
-        __get_machines "all"
-        ;;
-    esac
+        *)
+            __get_machines "all"
+            ;;
+        esac
 }
 
 _docker-machine_ssh()
@@ -265,6 +265,15 @@ _docker-machine_status()
     case "$cur" in
         *)
             __get_machines "all"
+            ;;
+        esac
+}
+
+_docker-machine_url()
+{
+    case "$cur" in
+        *)
+            __get_machines "running"
             ;;
         esac
 }
