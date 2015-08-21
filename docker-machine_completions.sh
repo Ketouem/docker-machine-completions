@@ -369,6 +369,37 @@ _docker-machine_ls()
     esac
 }
 
+_docker-machine_regenerate-certs()
+{
+    local options_boolean="
+        $global_options_boolean
+        --force -f
+    "
+
+    case "$prev" in
+        --force|-f)
+            ;;
+
+        regenerate-certs)
+            ;;
+
+        *)
+            return
+            ;;
+    esac
+
+    case "$cur" in        
+        -*) 
+            COMPREPLY=( $( compgen -W "$options_boolean" -- "$cur" ) )
+            ;;
+
+
+        *)
+            __get_machines "running"
+            ;;
+    esac
+}
+
 _docker-machine_restart()
 {
     case "$cur" in        
