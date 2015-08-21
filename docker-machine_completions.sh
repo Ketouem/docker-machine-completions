@@ -14,12 +14,15 @@ __get_machines()
 
     case "$1" in
         "all")
-            machines=($(docker-machine ls | tail -n +2 | cut -d" " -f1))
+            machines=($(docker-machine ls -q))
             ;;
 
         "running")
-            machines=($(docker-machine ls | grep Running | tail | cut -d" " -f1))
+            machines=($(docker-machine ls -q --filter state=Running))
             ;;
+
+        "stopped")
+            machines=($(docker-machine ls -q --filter state=Stopped))
 
     esac
     COMPREPLY=( $(compgen -W "${machines[*]}" -- "$cur") )
@@ -233,8 +236,35 @@ _docker-machine_docker-machine()
     esac
 }
 
+_docker-machine_env()
+{
+    case "$prev" in
+        "env")
+            ;;
+
+        *)
+            return
+            ;;
+        esac
+
+    case "$cur" in
+        *)
+            __get_machines "running"
+            ;;
+        esac
+}
+
 _docker-machine_ip()
 {
+    case "$prev" in
+        "env")
+            ;;
+
+        *)
+            return
+            ;;
+        esac
+
     case "$cur" in
         *)
             __get_machines "running"
@@ -244,7 +274,16 @@ _docker-machine_ip()
 
 _docker-machine_rm()
 {
+    local options_boolean="
+        --force -f
+    "
+
     case "$cur" in
+
+        -*) 
+            COMPREPLY=( $( compgen -W "$options_boolean" -- "$cur" ) )
+            ;;
+
         *)
             __get_machines "all"
             ;;
