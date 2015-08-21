@@ -30,6 +30,35 @@ __get_machines()
     COMPREPLY=( $(compgen -W "${machines[*]}$2" -- "$cur") )
 }
 
+_docker-machine_config()
+{
+    local options_boolean="
+        $global_options_boolean
+        --swarm
+    "
+
+    case "$prev" in
+        "config")
+            ;;
+
+        -*)
+            ;;
+        *)
+            return
+            ;;
+    esac
+
+    case "$cur" in
+        -*) 
+            COMPREPLY=( $( compgen -W "$options_boolean" -- "$cur" ) )
+            ;;
+
+        *)
+            __get_machines "running"
+            ;;
+    esac
+}
+
 _docker-machine_create()
 {
     local options_with_args="
