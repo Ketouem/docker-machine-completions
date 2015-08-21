@@ -27,7 +27,7 @@ __get_machines()
             machines=($(docker-machine ls -q --filter state=Stopped))
 
     esac
-    COMPREPLY=( $(compgen -W "${machines[*]}" -- "$cur") )
+    COMPREPLY=( $(compgen -W "${machines[*]}$2" -- "$cur") )
 }
 
 _docker-machine_create()
@@ -296,6 +296,20 @@ _docker-machine_ip()
         esac
 }
 
+_docker-machine_kill()
+{
+    case "$cur" in        
+    -*) 
+        COMPREPLY=( $( compgen -W "$global_options_boolean" -- "$cur" ) )
+        ;;
+
+
+    *)
+        __get_machines "all"
+        ;;
+    esac
+}
+
 _docker-machine_ls()
 {
     local options_boolean="
@@ -326,6 +340,20 @@ _docker-machine_ls()
     esac
 }
 
+_docker-machine_restart()
+{
+    case "$cur" in        
+    -*) 
+        COMPREPLY=( $( compgen -W "$global_options_boolean" -- "$cur" ) )
+        ;;
+
+
+    *)
+        __get_machines "all"
+        ;;
+    esac
+}
+
 _docker-machine_rm()
 {
     local options_boolean="
@@ -340,6 +368,23 @@ _docker-machine_rm()
 
         *)
             __get_machines "all"
+            ;;
+        esac
+}
+
+_docker-machine_scp()
+{
+    local options_boolean="
+        $global_options_boolean
+        --recursive -r
+    "
+    case "$cur" in
+        -*) 
+            COMPREPLY=( $( compgen -W "$options_boolean" -- "$cur" ) )
+            ;;
+
+        *)
+            __get_machines "running" ":"
             ;;
         esac
 }
@@ -396,6 +441,18 @@ _docker-machine_stop()
         __get_machines "all"
         ;;
     esac
+}
+
+_docker-machine_upgrade(){
+    case "$cur" in
+        -*) 
+            COMPREPLY=( $( compgen -W "$global_options_boolean" -- "$cur" ) )
+            ;;
+
+        *)
+            __get_machines "all"
+            ;;
+        esac
 }
 
 _docker-machine_url()
