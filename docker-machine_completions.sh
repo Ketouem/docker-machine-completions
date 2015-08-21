@@ -325,17 +325,46 @@ _docker-machine_ip()
         esac
 }
 
+_docker-machine_inspect()
+{
+    local options_with_args="
+        --format -f
+    "
+
+    case "$prev" in
+        inspect)
+            ;;
+
+        --format|-f)
+            ;;
+
+        *)
+            return
+            ;;
+    esac
+
+    case "$cur" in
+        -*) 
+            COMPREPLY=( $( compgen -W "$global_options_boolean $options_with_args" -- "$cur" ) )
+            ;;
+
+        *)
+            __get_machines "all"
+            ;;
+    esac
+}
+
 _docker-machine_kill()
 {
     case "$cur" in        
-    -*) 
-        COMPREPLY=( $( compgen -W "$global_options_boolean" -- "$cur" ) )
-        ;;
+        -*) 
+            COMPREPLY=( $( compgen -W "$global_options_boolean" -- "$cur" ) )
+            ;;
 
 
-    *)
-        __get_machines "all"
-        ;;
+        *)
+            __get_machines "all"
+            ;;
     esac
 }
 
