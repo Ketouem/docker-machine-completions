@@ -222,13 +222,21 @@ _docker-machine_docker-machine()
 {
     local options_boolean="
         $global_options_boolean
-        --help -h
+        --debug -D
+        --tls-ca-cert
+        --tls-ca-key
+        --tls-client-cert
+        --tls-client-key
+        --native-ssh
         --version -v
+    "
+    local options_with_args="
+        --storage-path -s
     "
 
     case "$cur" in
         -*)
-            COMPREPLY=( $( compgen -W "$options_boolean $global_options_with_args" -- "$cur" ) )
+            COMPREPLY=( $( compgen -W "$options_boolean $options_with_args" -- "$cur" ) )
             ;;
         *)
             COMPREPLY=( $( compgen -W "${commands[*]}" -- "$cur") )
@@ -238,6 +246,7 @@ _docker-machine_docker-machine()
 
 _docker-machine_env()
 {
+
     case "$prev" in
         "env")
             ;;
@@ -248,6 +257,10 @@ _docker-machine_env()
         esac
 
     case "$cur" in
+        -*) 
+            COMPREPLY=( $( compgen -W "$global_options_boolean" -- "$cur" ) )
+            ;;
+
         *)
             __get_machines "running"
             ;;
@@ -266,20 +279,54 @@ _docker-machine_ip()
         esac
 
     case "$cur" in
+        -*) 
+            COMPREPLY=( $( compgen -W "$global_options_boolean" -- "$cur" ) )
+            ;;
+
         *)
             __get_machines "running"
             ;;
         esac
 }
 
+_docker-machine_ls()
+{
+    local options_boolean="
+        $global_options_boolean
+        --quiet -q
+    "
+
+    local options_with_args="
+        --filter -f
+    "
+
+    case "$prev" in
+        --filter|-f)
+            local filters="
+                swarm=
+                driver=
+                state=
+            "
+            COMPREPLY=( $( compgen -W "$filters" -- "$cur" ) )
+            return
+            ;;
+    esac
+
+    case "$cur" in  
+        -*) 
+            COMPREPLY=( $( compgen -W "$options_with_args $options_boolean" -- "$cur" ) )
+            ;;
+    esac
+}
+
 _docker-machine_rm()
 {
     local options_boolean="
+        $global_options_boolean
         --force -f
     "
 
     case "$cur" in
-
         -*) 
             COMPREPLY=( $( compgen -W "$options_boolean" -- "$cur" ) )
             ;;
@@ -293,6 +340,24 @@ _docker-machine_rm()
 _docker-machine_ssh()
 {
     case "$cur" in
+        -*) 
+            COMPREPLY=( $( compgen -W "$global_options_boolean" -- "$cur" ) )
+            ;;
+
+        *)
+            __get_machines "running"
+            ;;
+        esac
+}
+
+_docker_machine_start()
+{
+    case "$cur" in        
+        -*) 
+            COMPREPLY=( $( compgen -W "$global_options_boolean" -- "$cur" ) )
+            ;;
+
+
         *)
             __get_machines "running"
             ;;
@@ -301,7 +366,11 @@ _docker-machine_ssh()
 
 _docker-machine_status()
 {
-    case "$cur" in
+    case "$cur" in        
+        -*) 
+            COMPREPLY=( $( compgen -W "$global_options_boolean" -- "$cur" ) )
+            ;;
+
         *)
             __get_machines "all"
             ;;
@@ -311,6 +380,10 @@ _docker-machine_status()
 _docker-machine_url()
 {
     case "$cur" in
+        -*) 
+            COMPREPLY=( $( compgen -W "$global_options_boolean" -- "$cur" ) )
+            ;;
+
         *)
             __get_machines "running"
             ;;
@@ -343,16 +416,7 @@ _docker-machine()
     )
 
     local global_options_boolean="
-        --debug -D
-        --tls-ca-cert
-        --tls-ca-key
-        --tls-client-cert
-        --tls-client-key
-        --native-ssh
-    "
-
-    local global_options_with_args="
-        --storage-path -s
+        --help -h
     "
 
     COMPREPLY=()
