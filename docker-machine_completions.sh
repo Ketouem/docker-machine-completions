@@ -285,15 +285,6 @@ _docker-machine_env()
 
 _docker-machine_ip()
 {
-    case "$prev" in
-        "env")
-            ;;
-
-        *)
-            return
-            ;;
-        esac
-
     case "$cur" in
         -*) 
             COMPREPLY=( $( compgen -W "$global_options_boolean" -- "$cur" ) )
@@ -375,7 +366,7 @@ _docker_machine_start()
 
 
         *)
-            __get_machines "running"
+            __get_machines "all"
             ;;
         esac
 }
@@ -393,8 +384,30 @@ _docker-machine_status()
         esac
 }
 
+_docker-machine_stop()
+{
+    case "$cur" in        
+    -*) 
+        COMPREPLY=( $( compgen -W "$global_options_boolean" -- "$cur" ) )
+        ;;
+
+
+    *)
+        __get_machines "all"
+        ;;
+    esac
+}
+
 _docker-machine_url()
 {
+    case "$prev" in
+        "url")
+            ;;
+        *)
+            return
+            ;;
+    esac
+
     case "$cur" in
         -*) 
             COMPREPLY=( $( compgen -W "$global_options_boolean" -- "$cur" ) )
