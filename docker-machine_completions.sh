@@ -8,6 +8,8 @@
 #   3) Copy this file to a given location (e.g. ~/comps/docker-machine_completions)
 #      and add the following to your .bashrc: . ~/comps/docker-machine_completions
 #
+shopt -s extglob
+
 __get_machines()
 {
     local machines
@@ -213,7 +215,7 @@ _docker-machine_create()
 
     case "$cur" in
         -*)
-            COMPREPLY=( $( compgen -W "$options_with_args" -- "$cur" ) )
+            COMPREPLY=( $( compgen -W "$global_options_boolean $options_with_args" -- "$cur" ) )
             ;;
     esac
 }
@@ -247,18 +249,32 @@ _docker-machine_docker-machine()
 _docker-machine_env()
 {
 
-    case "$prev" in
-        "env")
-            ;;
+    local options_boolean="
+        $global_options_boolean
+        --swarm
+        --unset -u
+    "
 
-        *)
+    local options_with_args="
+        --shell
+    "
+
+    case "$prev" in
+        "--shell")
+            local shell_types="
+                fish
+                powershell
+                cmd
+                default
+            "
+            COMPREPLY=( $( compgen -W "$shell_types" -- "$cur" ) )
             return
             ;;
         esac
 
     case "$cur" in
         -*) 
-            COMPREPLY=( $( compgen -W "$global_options_boolean" -- "$cur" ) )
+            COMPREPLY=( $( compgen -W "$options_with_args $global_options_boolean" -- "$cur" ) )
             ;;
 
         *)
